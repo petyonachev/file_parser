@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  file_parser:
+    build:
+      context: ./docker/apache
+    container_name: file_parser
+    volumes:
+      - .:/var/www/html/file_parser/
+    ports:
+      - 2520:8050
+    restart: always
+    entrypoint: sh /var/www/html/file_parser/docker/apache/start_server.sh
+    networks:
+      - symfony
+
+networks:
+  symfony:
