@@ -1,10 +1,11 @@
 <?php
 
 
-namespace App\Commands;
+namespace App\Command;
 
 
 use App\Entity\CoffeeItem;
+use App\Service\XmlFileLoaderService;
 use App\Validators\ItemValidator;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -12,7 +13,6 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 
 /**
  * Class CoffeeListParser
@@ -21,8 +21,8 @@ use Symfony\Component\Filesystem\Exception\FileNotFoundException;
 class CoffeeListParser extends Command
 {
 
-    private const LOCATION_LOCAL = 'local';
-    private const LOCATION_REMOTE = 'remote';
+    public const LOCATION_LOCAL = 'local';
+    public const LOCATION_REMOTE = 'remote';
 
     private const SUPPORTED_LOCATIONS = [
         self::LOCATION_LOCAL,
@@ -42,17 +42,28 @@ class CoffeeListParser extends Command
     private ItemValidator $itemValidator;
 
     /**
+     * @var XmlFileLoaderService
+     */
+    private XmlFileLoaderService $xmlFileLoader;
+
+    /**
      * CoffeeListParser constructor.
      * @param LoggerInterface $logger
      * @param ItemValidator $itemValidator
+     * @param XmlFileLoaderService $xmlFileLoader
      * @param string|null $name
      */
-    public function __construct(LoggerInterface $logger, ItemValidator $itemValidator, string $name = null)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        ItemValidator $itemValidator,
+        XmlFileLoaderService $xmlFileLoader,
+        string $name = null
+    ){
         parent::__construct($name);
 
         $this->logger = $logger;
         $this->itemValidator = $itemValidator;
+        $this->xmlFileLoader = $xmlFileLoader;
     }
 
     protected function configure()
@@ -71,7 +82,6 @@ class CoffeeListParser extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        ini_set('memory_limit', '4096M');
         $output->write('Beginning file parsing');
 
 
@@ -82,53 +92,54 @@ class CoffeeListParser extends Command
             return Command::FAILURE;
         }
 
-        $catalog = [];
         try {
-            $catalog = simplexml_load_string(file_get_contents($validatedArguments['filepath']));
-        } catch (FileNotFoundException $exception) {
-            $this->logger->error('Failed reading file. File not found.');
+            $catalog = $this->xmlFileLoader->loadFile($validatedArguments['location'], $validatedArguments['filepath']);
         } catch (Exception $exception) {
-            $this->logger->error('Failed reading file. Invalid file contents.');
+            $output->write('Failed loading file.');
+            $this->logger->error($exception->getMessage());
+            return Command::FAILURE;
         }
 
         $items = $this->parseCatalog($catalog);
-
+        $test = 0;
 
         return Command::SUCCESS;
     }
 
-    protected function parseCatalog(array $catalog)
+    protected function parseCatalog($catalog)
     {
-        $items = [];
+        $coffeeItems = [];
 
-        foreach ($catalog as $item) {
+        foreach ($catalog->children() as $item) {
             $coffeeItem = new CoffeeItem();
+
             $coffeeItem
-                ->setEntityId($item->entityId)
-                ->setCategoryName($item->categoryName)
-                ->setSku($item->sku)
-                ->setName($item->name)
-                ->setDescription($item->description)
-                ->setShortDescription($item->shortDescription)
-                ->setPrice($item->price)
-                ->setLink($item->link)
-                ->setImage($item->image)
-                ->setBrand($item->brand)
-                ->setRating($item->rating)
-                ->setCaffeinetype($item->caffeineType)
-                ->setCount($item->count)
-                ->setFlavoured($item->flavoured)
-                ->setSeasonal($item->seasonal)
-                ->setInStock($item->inStock)
-                ->setFacebook($item->facebook)
-                ->setIsKCup($item->isKCup);
+                ->setEntityId((int) $item->entity_id)
+                ->setCategoryName((string) $item->CategoryName)
+                ->setSku((int) $item->sku)
+                ->setName((string) $item->name)
+                ->setDescription((string) $item->description)
+                ->setShortDescription((string) $item->shortdesc)
+                ->setPrice((float) $item->price)
+                ->setLink((string) $item->link)
+                ->setImage((string) $item->image)
+                ->setBrand((string) $item->Brand)
+                ->setRating((int) $item->Rating)
+                ->setCaffeinetype((string) $item->CaffeineType)
+                ->setCount((int) $item->Count)
+                ->setFlavoured((string) $item->Flavored)
+                ->setSeasonal((string) $item->Seasonal)
+                ->setInStock((string) $item->Instock)
+                ->setFacebook((int) $item->Facebook)
+                ->setIsKCup((bool) $item->IsKCup);
 
-            $this->itemValidator->validateItem($coffeeItem);
-
-            $items[] = $coffeeItem;
+            $validation = $this->itemValidator->validateItem($coffeeItem);
+            if ($validation->getContent() === 'valid') {
+                $coffeeItems[] = $coffeeItem;
+            }
         }
 
-        return $items;
+        return $coffeeItems;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace App\Validators;
 
 
 use App\Entity\Item;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -30,7 +31,7 @@ class ItemValidator
      * @param Item $item
      * @return Response
      */
-    public function validateItem(Item $item)
+    public function validateItem(Item $item): Response
     {
         // check object for validation errors
         $errors = $this->validator->validate($item);
@@ -42,6 +43,6 @@ class ItemValidator
             return new Response($errorsString);
         }
 
-        return new Response('The author is valid! Yes!');
+        return new Response('valid');
     }
 }

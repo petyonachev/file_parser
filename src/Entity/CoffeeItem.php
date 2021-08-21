@@ -3,9 +3,6 @@
 
 namespace App\Entity;
 
-use App\Entity\Item;
-use Symfony\Component\Validator\Constraints as Assert;
-
 /**
  * Class CoffeeItem
  * @package App
@@ -13,26 +10,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 class CoffeeItem extends Item
 {
     /**
-     * @Assert\NotNull
-     * @Assert\GreaterThanOrEqual(0)
      * @var int To be provided in documentation
      */
     private int $sku;
 
     /**
-     * @Assert\NotNull
      * @var string Caffeine type
      */
     private string $caffeineType;
 
     /**
-     * @Assert\NotNull
      * @var string Whether item is flavoured
      */
     private string $flavoured;
 
     /**
-     * @Assert\NotNull
      * @var bool To be provided by documentation
      */
     private bool $isKCup;

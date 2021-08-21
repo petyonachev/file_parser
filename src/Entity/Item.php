@@ -16,13 +16,13 @@ abstract class Item
     private int $entityId;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      * @var string Item category
      */
     private string $categoryName;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      * @var string Name of item
      */
     private string $name;
@@ -30,16 +30,14 @@ abstract class Item
     /**
      * @var string|null Long description of the item
      */
-    private ?string $description;
+    private string $description;
 
     /**
      * @var string|null Short description of the item
      */
-    private ?string $shortDescription;
+    private string $shortDescription;
 
     /**
-     * @Assert\NotNull
-     * @Assert\GreaterThanOrEqual(0)
      * @var float Price of the item
      */
     private float $price;
@@ -47,15 +45,14 @@ abstract class Item
     /**
      * @var string|null Web link of the item
      */
-    private ?string $link;
+    private string $link;
 
     /**
      * @var string|null Image of the item
      */
-    private ?string $image;
+    private string $image;
 
     /**
-     * @Assert\NotNull
      * @var string Brand of the item
      */
     private string $brand;
@@ -63,23 +60,21 @@ abstract class Item
     /**
      * @var float|null Rating of the item
      */
-    private ?float $rating;
+    private float $rating;
 
     /**
-     * @Assert\NotNull
      * @Assert\GreaterThanOrEqual(0)
      * @var int Remaining stock
      */
     private int $count;
 
     /**
-     * @Assert\NotNull
      * @var string Whether item is seasonal
      */
     private string $seasonal;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      * @var string Whether item is in stock
      */
     private string $inStock;
@@ -145,36 +140,36 @@ abstract class Item
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getDescription(): ?string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
-     * @param string|null $description
+     * @param string $description
      * @return Item
      */
-    public function setDescription(?string $description): Item
+    public function setDescription(string $description): Item
     {
         $this->description = $description;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getShortDescription(): ?string
+    public function getShortDescription(): string
     {
         return $this->shortDescription;
     }
 
     /**
-     * @param string|null $shortDescription
+     * @param string $shortDescription
      * @return Item
      */
-    public function setShortDescription(?string $shortDescription): Item
+    public function setShortDescription(string $shortDescription): Item
     {
         $this->shortDescription = $shortDescription;
         return $this;
@@ -199,36 +194,36 @@ abstract class Item
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getLink(): ?string
+    public function getLink(): string
     {
         return $this->link;
     }
 
     /**
-     * @param string|null $link
+     * @param string $link
      * @return Item
      */
-    public function setLink(?string $link): Item
+    public function setLink(string $link): Item
     {
         $this->link = $link;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getImage(): ?string
+    public function getImage(): string
     {
         return $this->image;
     }
 
     /**
-     * @param string|null $image
+     * @param string $image
      * @return Item
      */
-    public function setImage(?string $image): Item
+    public function setImage(string $image): Item
     {
         $this->image = $image;
         return $this;
@@ -253,18 +248,18 @@ abstract class Item
     }
 
     /**
-     * @return float|null
+     * @return float
      */
-    public function getRating(): ?float
+    public function getRating(): float
     {
         return $this->rating;
     }
 
     /**
-     * @param float|null $rating
+     * @param float $rating
      * @return Item
      */
-    public function setRating(?float $rating): Item
+    public function setRating(float $rating): Item
     {
         $this->rating = $rating;
         return $this;
