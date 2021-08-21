@@ -3,10 +3,8 @@
 
 namespace App\Command;
 
-
-use App\Entity\CoffeeItem;
+use App\Parser\CoffeeCatalogParser;
 use App\Service\XmlFileLoaderService;
-use App\Validators\ItemValidator;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -37,33 +35,33 @@ class CoffeeListParser extends Command
     private LoggerInterface $logger;
 
     /**
-     * @var ItemValidator
-     */
-    private ItemValidator $itemValidator;
-
-    /**
      * @var XmlFileLoaderService
      */
     private XmlFileLoaderService $xmlFileLoader;
 
     /**
+     * @var CoffeeCatalogParser
+     */
+    private CoffeeCatalogParser $catalogParser;
+
+    /**
      * CoffeeListParser constructor.
      * @param LoggerInterface $logger
-     * @param ItemValidator $itemValidator
      * @param XmlFileLoaderService $xmlFileLoader
+     * @param CoffeeCatalogParser $catalogParser
      * @param string|null $name
      */
     public function __construct(
         LoggerInterface $logger,
-        ItemValidator $itemValidator,
         XmlFileLoaderService $xmlFileLoader,
+        CoffeeCatalogParser $catalogParser,
         string $name = null
     ){
         parent::__construct($name);
 
         $this->logger = $logger;
-        $this->itemValidator = $itemValidator;
         $this->xmlFileLoader = $xmlFileLoader;
+        $this->catalogParser = $catalogParser;
     }
 
     protected function configure()
@@ -100,46 +98,10 @@ class CoffeeListParser extends Command
             return Command::FAILURE;
         }
 
-        $items = $this->parseCatalog($catalog);
+        $items = $this->catalogParser->parseCatalog($catalog, $output);
         $test = 0;
 
         return Command::SUCCESS;
-    }
-
-    protected function parseCatalog($catalog)
-    {
-        $coffeeItems = [];
-
-        foreach ($catalog->children() as $item) {
-            $coffeeItem = new CoffeeItem();
-
-            $coffeeItem
-                ->setEntityId((int) $item->entity_id)
-                ->setCategoryName((string) $item->CategoryName)
-                ->setSku((int) $item->sku)
-                ->setName((string) $item->name)
-                ->setDescription((string) $item->description)
-                ->setShortDescription((string) $item->shortdesc)
-                ->setPrice((float) $item->price)
-                ->setLink((string) $item->link)
-                ->setImage((string) $item->image)
-                ->setBrand((string) $item->Brand)
-                ->setRating((int) $item->Rating)
-                ->setCaffeinetype((string) $item->CaffeineType)
-                ->setCount((int) $item->Count)
-                ->setFlavoured((string) $item->Flavored)
-                ->setSeasonal((string) $item->Seasonal)
-                ->setInStock((string) $item->Instock)
-                ->setFacebook((int) $item->Facebook)
-                ->setIsKCup((bool) $item->IsKCup);
-
-            $validation = $this->itemValidator->validateItem($coffeeItem);
-            if ($validation->getContent() === 'valid') {
-                $coffeeItems[] = $coffeeItem;
-            }
-        }
-
-        return $coffeeItems;
     }
 
     /**

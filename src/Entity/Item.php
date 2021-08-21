@@ -28,6 +28,7 @@ abstract class Item
     private string $name;
 
     /**
+     * @Assert\NotBlank
      * @var string|null Long description of the item
      */
     private string $description;
