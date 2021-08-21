@@ -40,7 +40,7 @@ class XmlFileLoaderService
     {
         $fullPath = realpath($filepath);
 
-        if (!$fullPath) {
+        if (!$fullPath || empty($filepath)) {
             throw new Exception('Failed reading file. File not found.');
         }
 

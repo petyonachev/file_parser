@@ -82,7 +82,6 @@ class CoffeeListParser extends Command
     {
         $output->write('Beginning file parsing');
 
-
         $validatedArguments = $this->validateArguments($input);
 
         if (!$validatedArguments) {
@@ -99,7 +98,6 @@ class CoffeeListParser extends Command
         }
 
         $items = $this->catalogParser->parseCatalog($catalog, $output);
-        $test = 0;
 
         return Command::SUCCESS;
     }

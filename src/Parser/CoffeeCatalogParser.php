@@ -48,7 +48,6 @@ class CoffeeCatalogParser
     {
         $coffeeItems = [];
 
-
         $catalogItems = $catalog->children();
         $totalItems = count($catalogItems);
         $itemCount = 1;
