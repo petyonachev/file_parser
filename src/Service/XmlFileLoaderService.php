@@ -4,7 +4,7 @@
 namespace App\Service;
 
 
-use App\Command\CoffeeListParser;
+use App\Command\CoffeeListConverter;
 use Exception;
 use SimpleXMLElement;
 
@@ -23,9 +23,9 @@ class XmlFileLoaderService
     public function loadFile(string $location, string $filepath)
     {
         switch ($location) {
-            case CoffeeListParser::LOCATION_REMOTE:
+            case CoffeeListConverter::LOCATION_REMOTE:
                 return $this->loadRemoteFile($filepath);
-            case CoffeeListParser::LOCATION_LOCAL:
+            case CoffeeListConverter::LOCATION_LOCAL:
             default:
                 return $this->loadLocalFile($filepath);
         }

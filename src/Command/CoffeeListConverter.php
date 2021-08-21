@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * Class CoffeeListParser
  * @package App\Commands
  */
-class CoffeeListParser extends Command
+class CoffeeListConverter extends Command
 {
 
     public const LOCATION_LOCAL = 'local';

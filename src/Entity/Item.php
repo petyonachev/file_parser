@@ -6,6 +6,10 @@ namespace App\Entity;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class Item
+ * @package App\Entity
+ */
 abstract class Item
 {
     /**

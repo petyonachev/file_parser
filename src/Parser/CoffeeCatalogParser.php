@@ -66,8 +66,8 @@ class CoffeeCatalogParser
                 ->setLink((string) $item->link)
                 ->setImage((string) $item->image)
                 ->setBrand((string) $item->Brand)
-                ->setRating((int) $item->Rating)
-                ->setCaffeinetype((string) $item->CaffeineType)
+                ->setRating((float) $item->Rating)
+                ->setCaffeineType((string) $item->CaffeineType)
                 ->setCount((int) $item->Count)
                 ->setFlavoured((string) $item->Flavored)
                 ->setSeasonal((string) $item->Seasonal)
@@ -79,7 +79,7 @@ class CoffeeCatalogParser
             if ($validation->getContent() === 'valid') {
                 $coffeeItems[] = $coffeeItem;
             } else {
-                $output->write('Item is skipped because it contains invalid data.');
+                $output->writeln('Item is skipped because it contains invalid data.');
                 $this->logger->warning(
                     'Item is not parsed because it contains the following invalid data: ' .
                     $validation->getContent()

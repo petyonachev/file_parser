@@ -4,25 +4,34 @@
 namespace App\Tests\unit\Service;
 
 
-use App\Command\CoffeeListParser;
+use App\Command\CoffeeListConverter;
 use App\Service\XmlFileLoaderService;
 use Exception;
-use PHPUnit\Framework\TestCase;
 use SimpleXMLElement;
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 /**
  * Class XmlFileLoaderServiceTest
  * @package App\Tests\unit\Service
  */
-class XmlFileLoaderServiceTest extends TestCase
+class XmlFileLoaderServiceTest extends KernelTestCase
 {
+    /**
+     * @var XmlFileLoaderService|object|null
+     */
     private XmlFileLoaderService $fileLoader;
 
+    /**
+     * Runs before every test
+     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->fileLoader = new XmlFileLoaderService();
+        self::bootKernel();
+        $container = static::getContainer();
+
+        $this->fileLoader = $container->get(XmlFileLoaderService::class);
     }
 
     /**
@@ -35,8 +44,8 @@ class XmlFileLoaderServiceTest extends TestCase
     {
         // load file
         $catalog = $this->fileLoader->loadFile(
-            CoffeeListParser::LOCATION_LOCAL,
-            realpath('./../../files/coffee/coffee_feed.xml')
+            CoffeeListConverter::LOCATION_LOCAL,
+            realpath('./tests/files/coffee/coffee_feed.xml')
         );
 
         // check that file is correctly loaded and contains data
@@ -57,7 +66,7 @@ class XmlFileLoaderServiceTest extends TestCase
 
         // try to load file
         $this->fileLoader->loadFile(
-            CoffeeListParser::LOCATION_LOCAL,
+            CoffeeListConverter::LOCATION_LOCAL,
             realpath('coffee_feed.xml')
         );
     }
@@ -74,8 +83,8 @@ class XmlFileLoaderServiceTest extends TestCase
 
         // try to load file
         $this->fileLoader->loadFile(
-            CoffeeListParser::LOCATION_LOCAL,
-            realpath('./../../files/invalid_xml_file.xml')
+            CoffeeListConverter::LOCATION_LOCAL,
+            realpath('./tests/files/invalid_xml_file.xml')
         );
     }
 }
