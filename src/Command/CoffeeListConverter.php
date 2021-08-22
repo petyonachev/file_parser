@@ -4,6 +4,7 @@
 namespace App\Command;
 
 use App\Parser\CoffeeCatalogParser;
+use App\Service\GoogleSheetsService;
 use App\Service\XmlFileLoaderService;
 use Exception;
 use Psr\Log\LoggerInterface;
@@ -98,6 +99,9 @@ class CoffeeListConverter extends Command
         }
 
         $items = $this->catalogParser->parseCatalog($catalog, $output);
+
+        $test = new GoogleSheetsService();
+        $test->updateSheet($items);
 
         return Command::SUCCESS;
     }

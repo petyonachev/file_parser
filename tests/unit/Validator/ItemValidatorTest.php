@@ -4,7 +4,7 @@
 namespace App\Tests\unit\Validator;
 
 
-use App\Entity\CoffeeItem;
+use App\Entity\Item;
 use App\Validators\ItemValidator;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -41,11 +41,11 @@ class ItemValidatorTest extends KernelTestCase
     /**
      * Creates a valid coffee item object
      *
-     * @return CoffeeItem
+     * @return Item
      */
-    private function createValidItem(): CoffeeItem
+    private function createValidItem(): Item
     {
-        $coffeeItem = new CoffeeItem();
+        $coffeeItem = new Item();
 
         $coffeeItem
             ->setEntityId(5)

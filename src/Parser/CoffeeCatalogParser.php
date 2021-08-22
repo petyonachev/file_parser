@@ -3,8 +3,7 @@
 
 namespace App\Parser;
 
-
-use App\Entity\CoffeeItem;
+use App\Entity\Item;
 use App\Validators\ItemValidator;
 use Psr\Log\LoggerInterface;
 use SimpleXMLElement;
@@ -53,27 +52,26 @@ class CoffeeCatalogParser
         $itemCount = 1;
         foreach ($catalogItems as $item) {
             $output->writeln('Parsing item ' . $itemCount . ' of ' . $totalItems);
-            $coffeeItem = new CoffeeItem();
+            $coffeeItem = new Item();
 
-            $coffeeItem
-                ->setEntityId((int) $item->entity_id)
-                ->setCategoryName((string) $item->CategoryName)
-                ->setSku((int) $item->sku)
-                ->setName((string) $item->name)
-                ->setDescription((string) $item->description)
-                ->setShortDescription((string) $item->shortdesc)
-                ->setPrice((float) $item->price)
-                ->setLink((string) $item->link)
-                ->setImage((string) $item->image)
-                ->setBrand((string) $item->Brand)
-                ->setRating((float) $item->Rating)
-                ->setCaffeineType((string) $item->CaffeineType)
-                ->setCount((int) $item->Count)
-                ->setFlavoured((string) $item->Flavored)
-                ->setSeasonal((string) $item->Seasonal)
-                ->setInStock((string) $item->Instock)
-                ->setFacebook((int) $item->Facebook)
-                ->setIsKCup((bool) $item->IsKCup);
+            $coffeeItem->entityId = (int) $item->entity_id;
+            $coffeeItem->categoryName = (string) $item->CategoryName;
+            $coffeeItem->sku = (int) $item->sku;
+            $coffeeItem->name = (string) $item->name;
+            $coffeeItem->description = (string) $item->description;
+            $coffeeItem->shortDescription = (string) $item->shortdesc;
+            $coffeeItem->price = (float) $item->price;
+            $coffeeItem->link = (string) $item->link;
+            $coffeeItem->image = (string) $item->image;
+            $coffeeItem->brand = (string) $item->Brand;
+            $coffeeItem->rating = (float) $item->Rating;
+            $coffeeItem->caffeineType = (string) $item->CaffeineType;
+            $coffeeItem->count = (int) $item->Count;
+            $coffeeItem->flavoured = (string) $item->Flavored;
+            $coffeeItem->seasonal = (string) $item->Seasonal;
+            $coffeeItem->inStock = (string) $item->Instock;
+            $coffeeItem->facebook = (int) $item->Facebook;
+            $coffeeItem->isKCup = (bool) $item->IsKCup;
 
             $validation = $this->itemValidator->validateItem($coffeeItem);
             if ($validation->getContent() === 'valid') {

@@ -5,7 +5,7 @@ namespace App\Tests\unit\Parser;
 
 
 use App\Command\CoffeeListConverter;
-use App\Entity\CoffeeItem;
+use App\Entity\Item;
 use App\Parser\CoffeeCatalogParser;
 use App\Service\XmlFileLoaderService;
 use Exception;
@@ -71,8 +71,8 @@ class CoffeeCatalogParserTest extends KernelTestCase
 
         // check that both items from the file have been correctly parsed
         $this->assertCount(2, $items);
-        $this->assertInstanceOf(CoffeeItem::class, $items[0]);
-        $this->assertInstanceOf(CoffeeItem::class, $items[1]);
+        $this->assertInstanceOf(Item::class, $items[0]);
+        $this->assertInstanceOf(Item::class, $items[1]);
         $this->assertNotEquals($items[0]->getEntityId(), $items[1]->getEntityId());
 
     }
@@ -94,7 +94,7 @@ class CoffeeCatalogParserTest extends KernelTestCase
 
         // check that the item with invalid entity id was skipped
         $this->assertCount(1, $items);
-        $this->assertInstanceOf(CoffeeItem::class, $items[0]);
+        $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertNotEquals(-5, $items[0]->getEntityId());
     }
 }
