@@ -73,7 +73,7 @@ class CoffeeCatalogParserTest extends KernelTestCase
         $this->assertCount(2, $items);
         $this->assertInstanceOf(Item::class, $items[0]);
         $this->assertInstanceOf(Item::class, $items[1]);
-        $this->assertNotEquals($items[0]->getEntityId(), $items[1]->getEntityId());
+        $this->assertNotEquals($items[0]->entityId, $items[1]->entityId);
 
     }
 
@@ -95,6 +95,6 @@ class CoffeeCatalogParserTest extends KernelTestCase
         // check that the item with invalid entity id was skipped
         $this->assertCount(1, $items);
         $this->assertInstanceOf(Item::class, $items[0]);
-        $this->assertNotEquals(-5, $items[0]->getEntityId());
+        $this->assertNotEquals(-5, $items[0]->entityId);
     }
 }

@@ -12,6 +12,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 
 /**
  * Class CoffeeListParser
@@ -28,7 +29,7 @@ class CoffeeListConverter extends Command
         self::LOCATION_REMOTE
     ];
 
-    protected static $defaultName = 'app:parse-coffee-catalog';
+    protected static $defaultName = 'app:convert-coffee-catalog';
 
     /**
      * @var LoggerInterface
@@ -46,16 +47,30 @@ class CoffeeListConverter extends Command
     private CoffeeCatalogParser $catalogParser;
 
     /**
+     * @var GoogleSheetsService
+     */
+    private GoogleSheetsService $sheetsService;
+
+    /**
+     * @var ContainerBagInterface
+     */
+    private ContainerBagInterface $containerBag;
+
+    /**
      * CoffeeListParser constructor.
      * @param LoggerInterface $logger
      * @param XmlFileLoaderService $xmlFileLoader
      * @param CoffeeCatalogParser $catalogParser
+     * @param GoogleSheetsService $sheetsService
+     * @param ContainerBagInterface $containerBag
      * @param string|null $name
      */
     public function __construct(
         LoggerInterface $logger,
         XmlFileLoaderService $xmlFileLoader,
         CoffeeCatalogParser $catalogParser,
+        GoogleSheetsService $sheetsService,
+        ContainerBagInterface $containerBag,
         string $name = null
     ){
         parent::__construct($name);
@@ -63,6 +78,8 @@ class CoffeeListConverter extends Command
         $this->logger = $logger;
         $this->xmlFileLoader = $xmlFileLoader;
         $this->catalogParser = $catalogParser;
+        $this->sheetsService = $sheetsService;
+        $this->containerBag = $containerBag;
     }
 
     protected function configure()
@@ -81,29 +98,43 @@ class CoffeeListConverter extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->write('Beginning file parsing');
+        $output->writeln('Beginning file parsing');
 
+        // validate the arguments passed to the command
         $validatedArguments = $this->validateArguments($input);
-
         if (!$validatedArguments) {
-            $output->write('Invalid arguments');
+            $output->writeln('Invalid arguments.');
             return Command::FAILURE;
         }
 
         try {
+            // load file
             $catalog = $this->xmlFileLoader->loadFile($validatedArguments['location'], $validatedArguments['filepath']);
         } catch (Exception $exception) {
-            $output->write('Failed loading file.');
+            $output->writeln('Failed loading file.');
             $this->logger->error($exception->getMessage());
             return Command::FAILURE;
         }
 
+        // parse the catalog while remove any items containing invalid data
         $items = $this->catalogParser->parseCatalog($catalog, $output);
 
-        $test = new GoogleSheetsService();
-        $test->updateSheet($items);
+        $output->writeln('Finished parsing file.');
 
-        return Command::SUCCESS;
+        // update sheet with items
+        $result = $this->sheetsService->updateSheet(
+            $this->containerBag->get('app.spreadsheet_id'),
+            $this->containerBag->get('app.sheet_name'),
+            $items
+        );
+
+        if ($result->updatedRows > 0) {
+            $output->writeln('Google sheet updated!');
+            return Command::SUCCESS;
+        }
+
+        $output->writeln('Google sheet update failed!');
+        return Command::FAILURE;
     }
 
     /**
@@ -117,13 +148,18 @@ class CoffeeListConverter extends Command
         $location = $input->getArgument('location');
         $filepath = $input->getArgument('filepath');
 
+        $validArguments = true;
         if (!in_array($location, self::SUPPORTED_LOCATIONS)) {
             $this->logger->error('Invalid file location');
-            return false;
+            $validArguments = false;
         }
 
         if (!is_string($filepath)) {
             $this->logger->error('Invalid filepath');
+            $validArguments = false;
+        }
+
+        if (!$validArguments) {
             return false;
         }
 

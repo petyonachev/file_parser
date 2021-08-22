@@ -4,6 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.spreadsheet_id: '1p_Y-Qk4eUnNy76Yll0ZyDw3Ox8AlbgsL3U8HpDOogjE'
+    app.sheet_name: 'coffeelist'
 
 services:
     # default configuration for services in *this* file

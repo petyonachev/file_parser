@@ -39,6 +39,8 @@ class CoffeeCatalogParser
     }
 
     /**
+     * Parse a catalog of items
+     *
      * @param SimpleXMLElement $catalog
      * @param OutputInterface $output
      * @return array
@@ -47,6 +49,7 @@ class CoffeeCatalogParser
     {
         $coffeeItems = [];
 
+        // get child elements and parse them
         $catalogItems = $catalog->children();
         $totalItems = count($catalogItems);
         $itemCount = 1;
@@ -73,6 +76,7 @@ class CoffeeCatalogParser
             $coffeeItem->facebook = (int) $item->Facebook;
             $coffeeItem->isKCup = (bool) $item->IsKCup;
 
+            // validate item
             $validation = $this->itemValidator->validateItem($coffeeItem);
             if ($validation->getContent() === 'valid') {
                 $coffeeItems[] = $coffeeItem;

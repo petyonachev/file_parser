@@ -47,25 +47,24 @@ class ItemValidatorTest extends KernelTestCase
     {
         $coffeeItem = new Item();
 
-        $coffeeItem
-            ->setEntityId(5)
-            ->setCategoryName('category')
-            ->setSku(10)
-            ->setName('name')
-            ->setDescription('full desc')
-            ->setShortDescription('short desc')
-            ->setPrice(20)
-            ->setLink('http link')
-            ->setImage('image link')
-            ->setBrand('brand')
-            ->setRating(3)
-            ->setCaffeineType('caffeine type')
-            ->setCount(10)
-            ->setFlavoured('Yes')
-            ->setSeasonal('Yes')
-            ->setInStock('Yes')
-            ->setFacebook(5)
-            ->setIsKCup(true);
+        $coffeeItem->entityId = 5;
+        $coffeeItem->categoryName = 'category';
+        $coffeeItem->sku = 10;
+        $coffeeItem->name = 'name';
+        $coffeeItem->description = 'full desc';
+        $coffeeItem->shortDescription = 'short desc';
+        $coffeeItem->price = 20;
+        $coffeeItem->link = 'http link';
+        $coffeeItem->image = 'image link';
+        $coffeeItem->brand = 'brand';
+        $coffeeItem->rating = 3;
+        $coffeeItem->caffeineType = 'caffeine type';
+        $coffeeItem->count = 10;
+        $coffeeItem->flavoured = 'Yes';
+        $coffeeItem->seasonal = 'Yes';
+        $coffeeItem->inStock = 'Yes';
+        $coffeeItem->facebook = 5;
+        $coffeeItem->isKCup = true;
 
         return $coffeeItem;
     }
@@ -93,7 +92,7 @@ class ItemValidatorTest extends KernelTestCase
     {
         // create valid item and set the entity id to invalid value
         $item = $this->createValidItem();
-        $item->setEntityId(-1);
+        $item->entityId = -1;
 
         // use validator interface to get the error for invalid entity id
         $errors = $this->validator->validate($item);
