@@ -64,7 +64,6 @@ class XmlFileLoaderService
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $filepath);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         if(curl_exec($ch) === FALSE) {

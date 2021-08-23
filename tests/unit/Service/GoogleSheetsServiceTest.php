@@ -43,8 +43,8 @@ class GoogleSheetsServiceTest extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
 
-        $this->spreadsheetId = $container->getParameter('app.spreadsheet_id');
-        $this->sheetName = $container->getParameter('app.sheet_name');
+        $this->spreadsheetId = $container->getParameter('spreadsheet_id');
+        $this->sheetName = $container->getParameter('sheet_name');
 
         $this->sheetsService = $container->get(GoogleSheetsService::class);
         $this->catalogParser = $container->get(CoffeeCatalogParser::class);

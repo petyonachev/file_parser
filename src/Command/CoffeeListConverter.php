@@ -123,11 +123,12 @@ class CoffeeListConverter extends Command
 
         // update sheet with items
         $result = $this->sheetsService->updateSheet(
-            $this->containerBag->get('app.spreadsheet_id'),
-            $this->containerBag->get('app.sheet_name'),
+            $this->containerBag->get('spreadsheet_id'),
+            $this->containerBag->get('sheet_name'),
             $items
         );
 
+        // if rows were updated, command was successful
         if ($result->updatedRows > 0) {
             $output->writeln('Google sheet updated!');
             return Command::SUCCESS;

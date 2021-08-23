@@ -47,8 +47,8 @@ class CoffeeListConverterTest extends KernelTestCase
         $container = static::getContainer();
         $application = new Application($kernel);
 
-        $this->spreadsheetId = $container->getParameter('app.spreadsheet_id');
-        $this->sheetName = $container->getParameter('app.sheet_name');
+        $this->spreadsheetId = $container->getParameter('spreadsheet_id');
+        $this->sheetName = $container->getParameter('sheet_name');
 
         $command = $application->find('app:convert-coffee-catalog');
         $this->commandTester = new CommandTester($command);

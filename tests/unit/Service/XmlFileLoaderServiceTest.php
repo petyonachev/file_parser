@@ -87,4 +87,58 @@ class XmlFileLoaderServiceTest extends KernelTestCase
             realpath('./tests/files/invalid_xml_file.xml')
         );
     }
+
+    /**
+     * Test loading of remote file
+     *
+     * @throws Exception
+     */
+    public function testLoadRemoteFile()
+    {
+        // load file
+        $catalog = $this->fileLoader->loadFile(
+            CoffeeListConverter::LOCATION_REMOTE,
+            'https://pastebin.com/raw/4zSYQR7r'
+        );
+
+        // check that file is correctly loaded and contains data
+        $this->assertInstanceOf(SimpleXMLElement::class, $catalog);
+        $this->assertNotEmpty($catalog->children());
+    }
+
+    /**
+     * test loading local file that does not exist at the location
+     *
+     * @throws Exception
+     * @link XmlFileLoaderService::loadLocalFile()
+     */
+    public function testRemoteFileNotFound()
+    {
+        // check that file not found exception is generated
+        $this->expectExceptionMessage('Failed retrieving file.');
+
+        // try to load file
+        $this->fileLoader->loadFile(
+            CoffeeListConverter::LOCATION_REMOTE,
+            'test'
+        );
+    }
+
+    /**
+     * test loading local file that contains invalid xml data
+     *
+     * @throws Exception
+     * @link XmlFileLoaderService::loadLocalFile()
+     */
+    public function testLoadRemoteFileWithInvalidData()
+    {
+        $this->expectExceptionMessage('Failed reading file. Invalid file contents.');
+
+        // try to load file
+        // data is invalid since this returns the entire HTML string which simpleXML can't parse
+        $this->fileLoader->loadFile(
+            CoffeeListConverter::LOCATION_REMOTE,
+            'https://pastebin.com/4zSYQR7r'
+        );
+    }
 }
