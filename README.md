@@ -23,3 +23,7 @@ To make sure that everything runs smoothly, there is small configuration require
 You can now create your own commands that will use the already defined services for reading xml files and updating Google Sheets. To run the predefined command use <b>bin/console app:convert-coffee-catalog --location --filepath</b>.
  * Location parameter expects either <b>local</b> or <b>remote</b> depending on whether the file is stored locally or is a remote file.
  * Filepath parameter should contain either the full path to the file if the file is stored locally, or link to the raw XML data if the file is stored remotely. this project can only handle reading remote files that are XML or links that contain only XML data and no HTML.
+
+### Known Issues
+
+Composer sometimes gets stuck while installing google/api-client. I don't know why that is happening, but sometimes that is fixed by deleting vendor/google and running composer install again. So far I haven't found a solution that works fully. It seems to be getting stuck while running rm -rf command on some cached folder.
